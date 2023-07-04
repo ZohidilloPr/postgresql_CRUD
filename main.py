@@ -1,8 +1,8 @@
 import psycopg2
-from add import WriteData
-from read import ReadData
-from data import creates_tables
+from views.add import WriteData
+from views.read import ReadData
 from config.settings import config
+from config.data import creates_tables
 
 # dasturdagi barcha funksialar toplanadigan file
 

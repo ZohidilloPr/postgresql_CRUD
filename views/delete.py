@@ -28,5 +28,3 @@ def DeleteSQLData(table):
         print("deleting is successfully")
         if input("Delete again (y/n): ").lower() == "y":
             DeleteSQLData(table)
-
-DeleteSQLData("subjects")

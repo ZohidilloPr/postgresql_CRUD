@@ -1,5 +1,5 @@
 import psycopg2
-from read import MakeTableSqlQuery
+from .read import MakeTableSqlQuery
 from config.settings import config
 
 # data adding views

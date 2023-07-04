@@ -1,4 +1,5 @@
-from update import UpdateSQLData
+from .update import UpdateSQLData
+from .delete import DeleteSQLData
 from terminaltables import AsciiTable # table in terminal
 # data reading views.
 
@@ -76,9 +77,11 @@ def ExtraOpportunities(table, cursor):
     """ 
         extra opportunities for detail of data, extra queries
     """
-    extra = input("extra opportuinites (if you want to use): \n\n\t1. Search\n\t2. Detail\n\t3. Update\n\nYour Option: ")
+    extra = input("extra opportuinites (if you want to use): \n\n\t1. Search\n\t2. Detail\n\t3. Update\n\t4. Delete \n\nYour Option: ")
     if extra == "3":
         UpdateSQLData(table)
+    elif extra == "4":
+        DeleteSQLData(table)
     if table == "teachers": 
         table_names = ["id", "f_name", "last_name", "subject", "register_time"]
         if extra == "1":
