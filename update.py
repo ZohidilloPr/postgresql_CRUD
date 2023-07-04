@@ -10,6 +10,8 @@ cursor = conn.cursor()
 def UpdateSQLData(table):
     """ update objects fields """
     id = (input("Enter object id: "))
+    cursor.execute(f"SELECT * FROM {table} WHERE id = {id};")
+    print("Exists Fields Name: \n", [fields[0] for fields in cursor.description])
     field = input("Field name: ")
     value = input("Value: ")
     sql = f"UPDATE {table} SET {field} = '{value}' WHERE id = {id};"
