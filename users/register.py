@@ -47,18 +47,18 @@ def validate_password(password):
     return {"status": True, "error": ""}
 
 
-def Register(cursor):
+def Register(cursor, conn):
     """Register new user"""
-    cursor.execute("SELECT username FROM users;")
-    usernames_list = [username[0] for username in cursor.fetchall()]
+    cursor.execute("SELECT username FROM users;") # get only usernames
+    usernames_list = [username[0] for username in cursor.fetchall()] # convert to list
     print("\nAdd New User\n")
     username = "@" + input("Enter username: ").lower()
-    if username not in usernames_list and username != "@":
+    if username not in usernames_list and username != "@": # checking username
         for check in range(3):
             password = input("Enter password: ")
             password_1 = input("Enter password again: ")
-            if password != "" and password == password_1:
-                if validate_password(password)["status"]:
+            if password != "" and password == password_1: # checking password
+                if validate_password(password)["status"]: # validating password
                     f_name = input("Enter first name: ")
                     l_name = input("Enter last name: ")
                     for _ in range(3):
@@ -76,6 +76,8 @@ def Register(cursor):
                         print("Superuser is a user who has all permissions and can perform all actions in the program.")
                         superuser = input("Is the user a superuser? Write only (true/false): ").upper()
                         if superuser == "TRUE" or superuser == "FALSE":
+                            if superuser == "TRUE" and staff == "FALSE":
+                                staff = "TRUE"
                             break        
                         else:
                             if input(f"You didn't write 'true' or 'false'. You wrote: {superuser}.\nIf you want to change it, it will be set to 'false'.\nAre you agree? (Y/n): ").lower() == "y":
@@ -85,7 +87,9 @@ def Register(cursor):
                         INSERT INTO users (f_name, l_name, username, password, staff, superuser)
                         VALUES ('{f_name}', '{l_name}', '{username}', '{password}', '{staff}', '{superuser}');
                     """
-                    print(sql, "User registered successfully!")
+                    cursor.execute(sql) # prepeir sql query
+                    conn.commit() # push data to postgresql
+                    print("User registered successfully!")
                     break
                 else:
                     print(validate_password(password)["error"])
@@ -93,5 +97,5 @@ def Register(cursor):
                 print("Passwords do not match. Please try again.")
     else:
         print("This username is already taken. Please choose a different username.")
-        Register(cursor)
+        Register(cursor, conn)
 
