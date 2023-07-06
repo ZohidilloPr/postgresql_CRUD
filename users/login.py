@@ -16,7 +16,7 @@ def Login(cursor, conn):
     """ user login system """
     date = datetime.now()
     username = "@" + input("Enter username @: ").lower()
-    cursor.execute(f"SELECT id, username, password FROM users WHERE username = '{username}';")
+    cursor.execute(f"SELECT id, username, password, staff, superuser, last_login FROM users WHERE username = '{username}';")
     get_user = cursor.fetchone()
     if get_user != None:
         for _ in range(3):
@@ -26,14 +26,14 @@ def Login(cursor, conn):
                     sql = f"UPDATE users SET last_login = TIMESTAMP '{date}' WHERE id = 1;"
                     cursor.execute(sql)
                     conn.commit()  
-                    return True
+                    return {"status": True, "staff": True, "superuser": False, "username": username, "last_login": get_user[5]}
             else:
                 password_decode = str(decrypt_text(FERNET_GENERATE_KEY, str(get_user[2]).encode("utf-8")))
                 if password == password_decode:
                     sql = f"UPDATE users SET last_login = TIMESTAMP '{date}' WHERE id = {get_user[0]};"
                     cursor.execute(sql)
                     conn.commit()  
-                    return True
+                    return {"status": True, "staff": get_user[3], "superuser": get_user[4], "username": get_user[1], "last_login": get_user[5]}
                 else:
                     print("password is invalid")
     else:
