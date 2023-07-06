@@ -1,4 +1,5 @@
 import psycopg2
+from users.login import Login
 from views.add import WriteData
 from views.read import ReadData
 from config.settings import config
@@ -14,19 +15,14 @@ cursor = conn.cursor()
 def Main():
     """ ASOSIY FUNCTION """
     creates_tables(cursor, conn)
-    Register(cursor, conn)
-    enter = input("Welcome Back :)\n\t1. Login\n\t2. Register\nChoice one: ")
-    if enter == "2":
-        Register(cursor, conn)
-
-    elif enter == "1":
+    user_login = Login(cursor, conn)
+    if user_login:
+        survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \nYour Option: ")
+        if survey_start == "1":
+            ReadData(cursor)
+        elif survey_start == "2":
+            WriteData(cursor, conn)
+    else:
         pass
-    survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \nYour Option: ")
-    if survey_start == "1":
-        ReadData(cursor)
-    
-    elif survey_start == "2":
-        WriteData(cursor, conn)
-
     conn.close() # close database
 Main()

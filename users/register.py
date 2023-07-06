@@ -1,4 +1,4 @@
-
+from cryptography.fernet import Fernet
 # register user view
 
 COMMON_PASSWORDS = {
@@ -33,6 +33,7 @@ COMMON_PASSWORDS = {
 
 MIN_PASSWORD_LENGTH = 5
 MAX_PASSWORD_LENGTH = 50
+FERNET_GENERATE_KEY = b'sZ0MqyVScIA44tlap-N0FIbD11FSCXlgxyoomRCS2O4='
 
 def validate_password(password):
     """Password validation function"""
@@ -47,6 +48,13 @@ def validate_password(password):
     return {"status": True, "error": ""}
 
 
+def encrypt_text(key, text):
+    """ text encripting function """
+    cipher_suite = Fernet(key)
+    encrypted_text = cipher_suite.encrypt(text.encode('utf-8'))
+    return encrypted_text.decode("utf-8")
+
+
 def Register(cursor, conn):
     """Register new user"""
     cursor.execute("SELECT username FROM users;") # get only usernames
@@ -59,6 +67,7 @@ def Register(cursor, conn):
             password_1 = input("Enter password again: ")
             if password != "" and password == password_1: # checking password
                 if validate_password(password)["status"]: # validating password
+                    password_encode = encrypt_text(FERNET_GENERATE_KEY, password)
                     f_name = input("Enter first name: ")
                     l_name = input("Enter last name: ")
                     for _ in range(3):
@@ -85,7 +94,7 @@ def Register(cursor, conn):
                                 break
                     sql = f"""
                         INSERT INTO users (f_name, l_name, username, password, staff, superuser)
-                        VALUES ('{f_name}', '{l_name}', '{username}', '{password}', '{staff}', '{superuser}');
+                        VALUES ('{f_name}', '{l_name}', '{username}', '{password_encode}', '{staff}', '{superuser}');
                     """
                     cursor.execute(sql) # prepeir sql query
                     conn.commit() # push data to postgresql

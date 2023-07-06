@@ -10,9 +10,9 @@ users_table = """
         staff BOOLEAN DEFAULT FALSE,
         superuser BOOLEAN DEFAULT FALSE, 
         username VARCHAR (100) NOT NULL UNIQUE,
-        password VARCHAR (50) NOT NULL,
+        password VARCHAR (200) NOT NULL,
         joined_date DATE DEFAULT CURRENT_DATE,
-        last_login DATE
+        last_login TIMESTAMP
     );
 """
 
