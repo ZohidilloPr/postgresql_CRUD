@@ -7,6 +7,7 @@ from config.settings import config
 from users.register import Register
 from terminaltables import AsciiTable
 from config.data import creates_tables
+from users.profile import ChangeUserPassword
 
 # dasturdagi barcha funksialar toplanadigan file
 
@@ -34,7 +35,7 @@ def Main():
         print(user_table.table)
         print()
         if user_login["superuser"]:
-            survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \n\t3. Register user\nYour Option: ")
+            survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \n\t3. Register user\n\t4. Profile \nYour Option: ")
             if survey_start == "1":
                 ReadData(cursor)
             elif survey_start == "2":
@@ -42,9 +43,18 @@ def Main():
             elif survey_start == "3":
                 Register(cursor, conn)
                 Main()
+            elif survey_start == "4":
+                profile = input("Choice One: \n\t1. Change password \nYour Option: ")
+                if profile == "1":
+                    ChangeUserPassword(id=user_login["user_id"], cursor=cursor, conn=conn)
+
         elif user_login["staff"]:
-            survey_start = input("Choice One: \n\t1. Read Data \nYour Option: ")
+            survey_start = input("Choice One: \n\t1. Read Data \n\t2.Profile \nYour Option: ")
             if survey_start == "1":
                 ReadData(cursor)
+            elif survey_start == "2":
+                profile = input("Choice One: \n\t1. Change password \nYour Option: ")
+                if profile == "1":
+                    ChangeUserPassword(int(id=user_login["user_id"]), cursor=cursor, conn=conn)
     conn.close() # close database
 Main()
