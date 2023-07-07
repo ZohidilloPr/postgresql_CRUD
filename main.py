@@ -7,11 +7,13 @@ from config.settings import config
 from users.register import Register
 from terminaltables import AsciiTable
 from config.data import creates_tables
+
 # dasturdagi barcha funksialar toplanadigan file
 
 params = config()
 conn = psycopg2.connect(**params) # connecting database
 cursor = conn.cursor()
+
 
 print()
 print("If you have not account, You can enter as guest")
@@ -19,12 +21,13 @@ print("***But You can only read data.")
 print("Username: guest\nPassword: guest")
 print()
 
+
 def Main():
     """ ASOSIY FUNCTION """
     creates_tables(cursor, conn)
     user_login = Login(cursor, conn)
     if user_login["status"]:
-        data = [["Current User", "Last Login", "User PC", "User PC OS version"], [user_login["username"], user_login["last_login"], f"{platform.system()} {platform.release()}", platform.version()]]
+        data = [["Names", "Values"],["Current User", user_login["username"]], ["Last Login", user_login["last_login"]], ["User PC", f"{platform.system()} {platform.release()}"], ["User PC OS version", platform.version()]]
         print()
         user_table = AsciiTable(data)
         user_table.inner_column_border = False
@@ -38,19 +41,10 @@ def Main():
                 WriteData(cursor, conn)
             elif survey_start == "3":
                 Register(cursor, conn)
+                Main()
         elif user_login["staff"]:
             survey_start = input("Choice One: \n\t1. Read Data \nYour Option: ")
             if survey_start == "1":
                 ReadData(cursor)
-
     conn.close() # close database
 Main()
-
-
-"""
-import sys
-if sys.stdout.isatty():
-    print("Inside a terminal!")
-else:
-    print("Piped output")
-"""

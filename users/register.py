@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+from config.settings import FERNET_GENERATE_KEY
 # register user view
 
 COMMON_PASSWORDS = {
@@ -33,7 +34,6 @@ COMMON_PASSWORDS = {
 
 MIN_PASSWORD_LENGTH = 5
 MAX_PASSWORD_LENGTH = 50
-FERNET_GENERATE_KEY = b'sZ0MqyVScIA44tlap-N0FIbD11FSCXlgxyoomRCS2O4='
 
 def validate_password(password):
     """Password validation function"""

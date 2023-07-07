@@ -1,8 +1,7 @@
 from datetime import datetime
 from cryptography.fernet import Fernet
+from config.settings import FERNET_GENERATE_KEY
 # users login views
-
-FERNET_GENERATE_KEY = b'sZ0MqyVScIA44tlap-N0FIbD11FSCXlgxyoomRCS2O4='
 
 
 def decrypt_text(key, encrypted_text):
@@ -40,6 +39,3 @@ def Login(cursor, conn):
         print("username is not found")
         Login(cursor, conn)
 
-
-def user_is_authenticated(user_login):
-    """ check user is authenticated """

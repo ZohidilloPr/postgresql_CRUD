@@ -1,4 +1,8 @@
+from decouple import config
 from configparser import ConfigParser
+
+# encode and decode password fernet key
+FERNET_GENERATE_KEY = config("FERNET_GENERATE_KEY").encode("utf-8")
 
 def config(filename="config/database.ini", section="postgresql"):
     """ database.ini filedan malumotlarni olish uchun """
