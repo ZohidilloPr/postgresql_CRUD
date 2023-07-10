@@ -15,7 +15,6 @@ params = config()
 conn = psycopg2.connect(**params) # connecting database
 cursor = conn.cursor()
 
-CommanQuestion(user_id=3, cursor=cursor, conn=conn)
 
 print()
 print("If you have not account, You can enter as guest")
@@ -30,7 +29,7 @@ def Main():
     user_login = Login(cursor, conn)
     if user_login["status"]:
         print()
-        data = [["Names", "Values"],["Current User", user_login["username"]], ["Last Login", user_login["last_login"]], ["User PC", f"{platform.system()} {platform.release()}"], ["User PC OS version", platform.version()]]
+        data = [["Names", "Values"],["Current User", user_login["username"]], ["Your status", user_login["user_status"]], ["Last Login", user_login["last_login"]], ["User PC", f"{platform.system()} {platform.release()}"], ["User PC OS version", platform.version()]]
         user_table = AsciiTable(data)
         user_table.inner_column_border = False
         print(user_table.table)
@@ -44,7 +43,7 @@ def Main():
                 print("Login again >>>")
                 Main()
                 print()
-        if user_login["superuser"]:
+        elif user_login["superuser"]:
             survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \n\t3. Register user\n\t4. Profile \nYour Option: ")
             if survey_start == "1":
                 ReadData(cursor)
@@ -70,4 +69,4 @@ def Main():
             else:
                 pass
     conn.close() # close database       
-# Main()
+Main()
