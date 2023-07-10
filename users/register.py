@@ -1,7 +1,52 @@
+from terminaltables import AsciiTable
 from config.settings import FERNET_GENERATE_KEY
 from .utilits import validate_password, encrypt_text
 
 # register user view
+
+def CommanQuestion(user_id, cursor, conn):
+    """ questions are for reset users's password """
+    for _ in range(5):
+        cursor.execute("SELECT id, users, question FROM questions WHERE users = %d;" % user_id)
+        selected_questions = [que[2] for que in cursor.fetchall()]
+        data = [["Questions"]]
+        # for selected in selected_questions:
+        print(selected_questions)
+        data.append(selected_questions) 
+        if selected_questions != []:
+            print("You selected questions: ")
+            table = AsciiTable(data)
+            print(table.table)
+        table_header = [["Question Id", "Question"]]
+        questions = {
+            "1": "What is your birth place name ?",
+            "2": "What is your first book name ?",
+            "3": "What is your first pet name ?",
+            "4": "Where is your parent`s birth place ?",
+            "5": "What is your superhero name ?"
+        }
+        print("\nChoice your question: ")
+        for q in questions:
+            if questions[q] not in selected_questions:
+                table_header.append(["%s" % q, "%s" % questions[q]])
+        table = AsciiTable(table_header)
+        print(table.table)
+        questions_id = input("\nEnter question id: ")
+        answer = input("Your Answer: ").lower()
+        sql = """
+            INSERT INTO questions (users, question, answer)
+            VALUES (%i, '%s', '%s');
+        """ % (user_id, questions[questions_id], answer)
+        cursor.execute(sql) # prepare sql query
+        conn.commit() # push sql query to posrgesql
+        if input("If you want to add questions again ? (Y/n): ").lower() == "y":
+            continue
+        else:break
+        if table_header[1] == []:
+            print(table_header[1])
+        else:
+            print("Answers are saved successfuly :)")
+            # break
 
 def Register(cursor, conn):
     """Register new user"""
@@ -46,7 +91,11 @@ def Register(cursor, conn):
                     """
                     cursor.execute(sql) # prepeir sql query
                     conn.commit() # push data to postgresql
-                    print("User registered successfully!")
+                    print("User registered successfully!\n")
+                    cursor.execute("SELECT id FROM users WHERE username = '%s';" % (username))
+                    current_user = cursor.fetchone()
+                    print("This questions will help when \nif You forget your password, you can reset password with this questions. \n")
+                    CommanQuestion(user_id=current_user[0], cursor=cursor, conn=conn)    
                     break
                 else:
                     print(validate_password(password)["error"])

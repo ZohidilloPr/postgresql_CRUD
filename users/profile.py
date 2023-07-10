@@ -29,3 +29,6 @@ def ChangeUserPassword(id, cursor, conn):
         else:
             print("Password is incorrect !")
 
+
+def ResetUserPassword():
+    """ user's password reset function """

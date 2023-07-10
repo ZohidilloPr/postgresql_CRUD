@@ -4,10 +4,10 @@ from users.login import Login
 from views.add import WriteData
 from views.read import ReadData
 from config.settings import config
-from users.register import Register
 from terminaltables import AsciiTable
 from config.data import creates_tables
 from users.profile import ChangeUserPassword
+from users.register import Register, CommanQuestion
 
 # dasturdagi barcha funksialar toplanadigan file
 
@@ -15,6 +15,7 @@ params = config()
 conn = psycopg2.connect(**params) # connecting database
 cursor = conn.cursor()
 
+CommanQuestion(user_id=3, cursor=cursor, conn=conn)
 
 print()
 print("If you have not account, You can enter as guest")
@@ -28,12 +29,21 @@ def Main():
     creates_tables(cursor, conn)
     user_login = Login(cursor, conn)
     if user_login["status"]:
-        data = [["Names", "Values"],["Current User", user_login["username"]], ["Last Login", user_login["last_login"]], ["User PC", f"{platform.system()} {platform.release()}"], ["User PC OS version", platform.version()]]
         print()
+        data = [["Names", "Values"],["Current User", user_login["username"]], ["Last Login", user_login["last_login"]], ["User PC", f"{platform.system()} {platform.release()}"], ["User PC OS version", platform.version()]]
         user_table = AsciiTable(data)
         user_table.inner_column_border = False
         print(user_table.table)
         print()
+        if user_login["username"] == "@guest":
+            survey_start = input("Choice One: \n\t1. Read Data \n\t2. Register \nYour Option: ")
+            if survey_start == "1":
+                ReadData(cursor)
+            elif survey_start == "2":
+                Register(cursor, conn)
+                print("Login again >>>")
+                Main()
+                print()
         if user_login["superuser"]:
             survey_start = input("Choice One: \n\t1. Read Data\n\t2. Write Data \n\t3. Register user\n\t4. Profile \nYour Option: ")
             if survey_start == "1":
@@ -47,14 +57,17 @@ def Main():
                 profile = input("Choice One: \n\t1. Change password \nYour Option: ")
                 if profile == "1":
                     ChangeUserPassword(id=user_login["user_id"], cursor=cursor, conn=conn)
-
+            else:
+                pass
         elif user_login["staff"]:
-            survey_start = input("Choice One: \n\t1. Read Data \n\t2.Profile \nYour Option: ")
+            survey_start = input("Choice One: \n\t1. Read Data \n\t2. Profile \nYour Option: ")
             if survey_start == "1":
                 ReadData(cursor)
             elif survey_start == "2":
                 profile = input("Choice One: \n\t1. Change password \nYour Option: ")
                 if profile == "1":
                     ChangeUserPassword(int(id=user_login["user_id"]), cursor=cursor, conn=conn)
-    conn.close() # close database
-Main()
+            else:
+                pass
+    conn.close() # close database       
+# Main()

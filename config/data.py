@@ -22,6 +22,16 @@ default_user = """
     WHERE NOT EXISTS (SELECT * FROM users WHERE username = '@guest');
 """
 
+comman_question="""
+    CREATE TABLE IF NOT EXISTS questions (
+        id BIGSERIAL NOT NULL PRIMARY KEY,
+        users BIGINT REFERENCES users(id),
+        question VARCHAR (300) NOT NULL,
+        answer VARCHAR (200) NOT NULL,
+        add_time DATE DEFAULT CURRENT_DATE
+    );
+"""
+
 subject_table = """
     CREATE TABLE IF NOT EXISTS subjects (
         id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -61,6 +71,7 @@ def creates_tables(cursor, conn):
     cursor.execute(subject_table)
     cursor.execute(teacher_table)
     cursor.execute(student_table)
+    cursor.execute(comman_question)
 
     # databaseni yopish uchun
     conn.commit()
