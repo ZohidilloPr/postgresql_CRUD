@@ -1,7 +1,9 @@
 from datetime import datetime
 from .utilits import decrypt_text
 from cryptography.fernet import Fernet
+from .profile import ResetUserPassword
 from config.settings import FERNET_GENERATE_KEY
+
 # users login views
 
 
@@ -14,6 +16,8 @@ def Login(cursor, conn):
     if get_user != None:
         for _ in range(3):
             password = input("Enter password: ")
+            if _ == 1 and input("did you forget password ? (Y/n): ").lower() == "y":
+                ResetUserPassword(username=username, cursor=cursor, conn=conn)
             if username == "@guest":
                 if password == "guest":
                     sql = f"UPDATE users SET last_login = TIMESTAMP '{date}' WHERE id = 1;"

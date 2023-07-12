@@ -6,14 +6,16 @@ from views.read import ReadData
 from config.settings import config
 from terminaltables import AsciiTable
 from config.data import creates_tables
-from users.profile import ChangeUserPassword
 from users.register import Register, CommanQuestion
+from users.profile import ChangeUserPassword, ResetUserPassword
 
 # dasturdagi barcha funksialar toplanadigan file
 
 params = config()
 conn = psycopg2.connect(**params) # connecting database
 cursor = conn.cursor()
+
+
 
 
 print()
@@ -63,9 +65,11 @@ def Main():
             if survey_start == "1":
                 ReadData(cursor)
             elif survey_start == "2":
-                profile = input("Choice One: \n\t1. Change password \nYour Option: ")
+                profile = input("Choice One: \n\t1. Change password \n\t2. Reset Password \nYour Option: ")
                 if profile == "1":
                     ChangeUserPassword(int(id=user_login["user_id"]), cursor=cursor, conn=conn)
+                elif profile == "2":
+                    ResetUserPassword(username=user_login["username"], cursor=cursor, conn=conn)
             else:
                 pass
     conn.close() # close database       
